@@ -11,36 +11,64 @@ namespace Cars.API.Controllers
         [HttpGet]
         public async Task<ActionResult<List<Car>>> GetCars()
         {
-            return await Mediator.Send(new List.Query());
+            var result =  await Mediator.Send(new List.Query());
+            if (result == null)
+                return NotFound();
+            if (result.isSuccess && result.Value != null)
+                return Ok(result.Value);
+            if (result.isSuccess && result.Value == null)
+                return NotFound();
+            return BadRequest(result.Error);
         }
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Car>> GetCar(Guid id)
+        [HttpGet("{id}")] // /api/cars/id
+        public async Task<IActionResult> GetCar(Guid id)
         {
-            return await Mediator.Send(new Details.Query
-            {
-                Id = id
-            });
+            var result = await Mediator.Send(new Details.Query { Id = id });
+            if (result == null)
+                return NotFound();
+            if (result.isSuccess && result.Value != null)
+                return Ok(result.Value);
+            if (result.isSuccess && result.Value == null)
+                return NotFound();
+            return BadRequest(result.Error);
         }
         [HttpPut("{id}")]
         public async Task<IActionResult> EditCar(Guid id, Car car)
         {
             car.Id = id;
-            await Mediator.Send(new Edit.Query { Car = car });
-            return Ok();
+           var result =  await Mediator.Send(new Edit.Query { Car = car });
+            if (result == null)
+                return NotFound();
+            if (result.isSuccess && result.Value != null)
+                return Ok(result.Value);
+            if (result.isSuccess && result.Value == null)
+                return NotFound();
+            return BadRequest(result.Error);
         }
         [HttpPost] // /api/cars
         public async Task<ActionResult<Car>> CreateCar([FromBody] Car car)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-            return await Mediator.Send(new Create.Query { Car = car });
+            var result =  await Mediator.Send(new Create.Query { Car = car });
+            if (result == null)
+                return NotFound();
+            if (result.isSuccess && result.Value != null)
+                return Ok(result.Value);
+            if (result.isSuccess && result.Value == null)
+                return NotFound();
+            return BadRequest(result.Error);
         }
         [HttpDelete("{id}")] // DELETE /api/cars/{id}
         public async Task<IActionResult> DeleteCar(Guid id)
         {
             // Pobranie obiektu car o podanym id z bazy danych
-           await Mediator.Send(new Delete.Query { Id = id });
-            return Ok();
+           var result = await Mediator.Send(new Delete.Query { Id = id });
+            if (result == null)
+                return NotFound();
+            if (result.isSuccess && result.Value != null)
+                return Ok(result.Value);
+            if (result.isSuccess && result.Value == null)
+                return NotFound();
+            return BadRequest(result.Error);
         }
     }
 

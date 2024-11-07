@@ -10,9 +10,9 @@ namespace Cars.Application.Cars
     public class List
     {
         // zapytanie zwraca listę obiektów typu Car
-        public class Query : IRequest<List<Car>> { }
+        public class Query : IRequest<Result<List<Car>>> { }
 
-        public class Handler : IRequestHandler<Query, List<Car>>
+        public class Handler : IRequestHandler<Query, Result<List<Car>>>
         {
             // przekazujemy kontekst danych
             private readonly DataContext _context;
@@ -22,9 +22,10 @@ namespace Cars.Application.Cars
                 _context = context;
             }
 
-            public async Task<List<Car>> Handle(Query request, CancellationToken cancellationToken)
+            public async Task<Result<List<Car>>> Handle(Query request, CancellationToken cancellationToken)
             {
-                return await _context.Cars.ToListAsync();
+                var result = await _context.Cars.ToListAsync();
+                return Result<List<Car>>.Success(result);
             }
         }
     }
