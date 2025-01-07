@@ -40,7 +40,7 @@ builder.Services.AddIdentityServices(builder.Configuration);
 builder.Services.AddAuthorization(opt =>
 {
     opt.AddPolicy("AdminPolicy", policy => policy.RequireRole("Admin"));
-    opt.AddPolicy("UserPolicy", policy => policy.RequireRole("User"));
+    opt.AddPolicy("UserPolicy", policy => policy.RequireRole("User","Admin"));
 });
 var app = builder.Build();
 

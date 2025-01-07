@@ -53,6 +53,7 @@ namespace Cars.API.Controllers
                 DisplayName = registerDTO.DisplayName,
                 Email = registerDTO.Email,
                 UserName = registerDTO.UserName,
+                Bio = "Ten uzytkownik jest stworzony przez formularz rejestracji"
             };
             var result = await _userManager.CreateAsync(user, registerDTO.Password);
             var result2 = await _userManager.AddToRoleAsync(user, "User");
