@@ -1,4 +1,5 @@
 ﻿using Cars.Domain;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,9 +10,30 @@ namespace Cars.Infrastructure
 {
     public class Seed
     {
-        public static async Task SeedData(DataContext context)
+        public static async Task SeedData(DataContext context, UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager)
         {
             // jeśli baza ma jakieś rekordy to nic nie rób
+            if (!roleManager.Roles.Any())
+            {
+                await roleManager.CreateAsync(new IdentityRole("Admin"));
+                await roleManager.CreateAsync(new IdentityRole("User"));
+            }
+            if (!userManager.Users.Any())
+            {
+                var users = new List<AppUser>{
+            new AppUser{DisplayName = "franek", Bio = "Test", UserName = "Franco123", Email = "franek@test.com"},
+            new AppUser{DisplayName = "asia",Bio = "Test", UserName = "Asiula123", Email = "asia@test.com"},
+            new AppUser{DisplayName = "darek",Bio = "Test", UserName = "Dario123", Email = "darek@test.com"},
+            new AppUser{DisplayName = "michal",Bio = "Test", UserName = "Szef123", Email = "michal@test.com"}
+        };
+
+                foreach (var user in users)
+                {
+                        await userManager.CreateAsync(user, "Hase!0123");
+                        await userManager.AddToRoleAsync(user, "Admin");
+                   
+                }
+            }
             if (context.Cars.Any()) return;
 
             var cars = new List<Car>
