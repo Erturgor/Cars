@@ -34,7 +34,7 @@ namespace Cars.API.Controllers
                 {
                     DisplayName = user.DisplayName,
                     UserName = user.UserName,
-                    Role = _userManager.GetRolesAsync(user).Result.ToList(),
+                    Roles = _userManager.GetRolesAsync(user).Result.ToList(),
                     Token = tokenService.CreateToken(user)
                 };
             }
@@ -47,6 +47,10 @@ namespace Cars.API.Controllers
             if(await _userManager.Users.AnyAsync(x => x.UserName ==registerDTO.UserName))
             {
                 return BadRequest("Username is taken.");
+            }
+            if (await _userManager.Users.AnyAsync(x => x.Email == registerDTO.Email))
+            {
+                return BadRequest("Email is taken.");
             }
             var user = new AppUser
             {
@@ -63,7 +67,7 @@ namespace Cars.API.Controllers
                 {
                     DisplayName = user.DisplayName,
                     UserName = user.UserName,
-                    Role = new List<string> { "User" },
+                    Roles = new List<string> { "User" },
                     Token = tokenService.CreateToken(user),
                 };
             }
